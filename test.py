@@ -49,11 +49,9 @@ for epoch in range(EPOCH):
     loss.backward()
     optimizer.step()
     epoch_list.append(epoch)
-    loss_list.append(loss.item())
-    
-    if epoch %10 == 0 :
-        print(f'{epoch},loss:{loss.item()}')
+    loss_list.append(100-loss.item())
 
+    
 #使用matplotlib输出曲线图
 plt.plot(epoch_list, loss_list, color='b')
 plt.xlabel('Epoch')
