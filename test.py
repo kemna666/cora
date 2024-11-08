@@ -17,7 +17,6 @@ class GCN(torch.nn.Module):
         x = F.relu(x)
         x = self.conv2(x,edge_index)
         return F.log_softmax(x,dim = 1)
-    
 data = dataset[0]
 input_dim = dataset.num_node_features
 hidden_dim = 16
