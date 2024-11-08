@@ -4,8 +4,11 @@ from torch_geometric.nn import GCNConv
 from torch_geometric.datasets import Planetoid
 from torch_geometric.transforms import NormalizeFeatures
 import matplotlib.pyplot as plt
-dataset = Planetoid(root = './temp/cora',name = 'Cora',transform = NormalizeFeatures()) 
 
+device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+dataset = Planetoid(root = './temp/cora',name = 'Cora',transform = NormalizeFeatures()) 
+#确定一下是不是GPU跑
+print(f'Using device: {device}')
 #构建神经网络
 class GCN(torch.nn.Module):
     def __init__(self,input_dim,hidden_dim,output_dim):
@@ -21,7 +24,7 @@ class GCN(torch.nn.Module):
         return F.log_softmax(x,dim = 1)
 
 #准备数据
-data = dataset[0]
+data = dataset[0].to(device)
 input_dim = dataset.num_node_features
 hidden_dim = 16
 output_dim = dataset.num_classes
@@ -29,7 +32,7 @@ lr = 0.01
 EPOCH = 100
 
 #模型和优化器，优化器用的Adam
-model = GCN(input_dim,hidden_dim,output_dim)
+model = GCN(input_dim,hidden_dim,output_dim).to(device)
 optimizer = torch.optim.Adam(model.parameters(),lr,weight_decay=5e-4)
 
 #存储准确率list
