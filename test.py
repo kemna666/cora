@@ -26,7 +26,7 @@ class GCN(torch.nn.Module):
 #准备数据
 data = dataset[0].to(device)
 input_dim = dataset.num_node_features
-hidden_dim = 16
+hidden_dim =250
 output_dim = dataset.num_classes
 lr = 0.01
 EPOCH = 100
@@ -51,11 +51,21 @@ for epoch in range(EPOCH):
     epoch_list.append(epoch)
     loss_list.append(100-loss.item())
 
-    
-#使用matplotlib输出曲线图
+
+#使用matplotlib输出训练曲线图
 plt.plot(epoch_list, loss_list, color='b')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.title('Training Loss')
 plt.show()
 
+#测试模型
+model.eval()
+_,pred = model(data.x,data.edge_index).max(dim = 1)
+correct = (pred[data.test_mask]==data.y[data.test_mask])
+  # 使用.sum()来计算正确预测的总数，并使用.item()获取标量值
+correct = (pred[data.test_mask] == data.y[data.test_mask]).sum().item()
+total = data.test_mask.sum().item()
+accuracy = correct / total
+print(f'Accuracy={accuracy:.4f}')
+    
