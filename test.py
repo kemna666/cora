@@ -45,5 +45,9 @@ for epoch in range(EPOCH):
     if epoch %10 == 0 :
         print(f'{epoch},loss:{loss.item()}')
 
-
+model.eval()
+_,predicted = model(data.x,data.edge_index)
+correct = (predicted[data.test_mask] == data.y[data.test_mask]).sum()
+accuracy = int(correct)/int(data.test_mask.sum())
+print(f'Accuracy:{accuracy:.4f}')
 
