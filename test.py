@@ -15,9 +15,9 @@ class GCN(torch.nn.Module):
 
     def forward(self,x,edge_index):
         x = self.Conv1(x,edge_index)
-        x=self.Conv2(x,edge_index)
+
+        x=self.Conv2(x,edge_index) 
         x = F.relu(x)
-        x = self.conv2(x,edge_index)
         return F.log_softmax(x,dim = 1)
 
 #准备数据
@@ -51,6 +51,10 @@ for epoch in range(EPOCH):
     if epoch %10 == 0 :
         print(f'{epoch},loss:{loss.item()}')
 
-plt.plot(epoch,loss,color = 'b')
+#使用matplotlib输出曲线图
+plt.plot(epoch_list, loss_list, color='b')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Training Loss')
 plt.show()
 
