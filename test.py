@@ -37,11 +37,13 @@ for epoch in range(EPOCH):
     #梯度归零
     optimizer.zero_grad()
     out = model(data.x,data.edge_index)
+    #负对数似然损失
     loss = F.nll_loss(out[data.train_mask],data.y[data.train_mask])
     loss.backward()
     optimizer.step()
     
     if epoch %10 == 0 :
         print(f'{epoch},loss:{loss.item()}')
+
 
 
