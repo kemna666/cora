@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
 from torch_geometric.datasets import Planetoid
 from torch_geometric.transforms import NormalizeFeatures
+import matplotlib.pyplot as plt
 dataset = Planetoid(root = './temp/cora',name = 'Cora',transform = NormalizeFeatures()) 
 
 #构建神经网络
@@ -31,6 +32,9 @@ EPOCH = 100
 model = GCN(input_dim,hidden_dim,output_dim)
 optimizer = torch.optim.Adam(model.parameters(),lr,weight_decay=5e-4)
 
+#存储准确率list
+loss_list = []
+epoch_list =[]
 #训练模型
 model.train()
 for epoch in range(EPOCH):
@@ -41,13 +45,12 @@ for epoch in range(EPOCH):
     loss = F.nll_loss(out[data.train_mask],data.y[data.train_mask])
     loss.backward()
     optimizer.step()
+    epoch_list.append(epoch)
+    loss_list.append(loss.item())
     
     if epoch %10 == 0 :
         print(f'{epoch},loss:{loss.item()}')
 
-model.eval()
-_,predicted = model(data.x,data.edge_index)
-correct = (predicted[data.test_mask] == data.y[data.test_mask]).sum()
-accuracy = int(correct)/int(data.test_mask.sum())
-print(f'Accuracy:{accuracy:.4f}')
+plt.plot(epoch,loss,color = 'b')
+plt.show()
 
